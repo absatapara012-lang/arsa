@@ -1,0 +1,9 @@
+{
+  "name": "ARSA Fit AI Lite",
+  "description": "High-Density Gym Management & Analytical Engine with AI-powered nutrition and retention tracking.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

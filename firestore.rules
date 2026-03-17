@@ -1,0 +1,91 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: members
+    // Fields: name, email, phone, tier, status, lastCheckIn, trainerId, nutritionData, downloadId
+    //
+    // Collection: trainers
+    // Fields: name, specialization, membersAssigned, rating, shift, status
+    //
+    // Collection: inquiries
+    // Fields: name, contact, program, status, inquiryDate
+    //
+    // Collection: expenses
+    // Fields: title, category, amount, date
+    //
+    // Collection: config
+    // Fields: gymName, logoUrl, currency, pricing
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "a.b.satapara012@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidMember(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.email is string && data.tier in ['Standard', 'Pro', 'AI'] &&
+             data.status in ['ACTIVE', 'AT_RISK', 'INACTIVE'];
+    }
+
+    function isValidTrainer(data) {
+      return data.name is string && data.specialization is string &&
+             data.shift in ['Morning', 'Evening'];
+    }
+
+    function isValidInquiry(data) {
+      return data.name is string && data.contact is string &&
+             data.status in ['Open', 'Qualified', 'Decision Pitch', 'Converted'];
+    }
+
+    function isValidExpense(data) {
+      return data.title is string && data.amount is number && data.amount >= 0 &&
+             data.category in ['Rent', 'Electricity', 'Supplement Stock', 'Staff', 'Other'];
+    }
+
+    // Rules
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    match /members/{memberId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin() && isValidMember(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /trainers/{trainerId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin() && isValidTrainer(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin() && isValidInquiry(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /expenses/{expenseId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAdmin() && isValidExpense(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}

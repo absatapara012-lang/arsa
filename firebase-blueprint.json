@@ -1,0 +1,98 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "A gym member profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "tier": { "type": "string", "enum": ["Standard", "Pro", "AI"] },
+        "status": { "type": "string", "enum": ["ACTIVE", "AT_RISK", "INACTIVE"] },
+        "lastCheckIn": { "type": "string", "format": "date-time" },
+        "trainerId": { "type": "string" },
+        "nutritionData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string" },
+              "kCal": { "type": "number" },
+              "protein": { "type": "number" },
+              "carbs": { "type": "number" },
+              "fat": { "type": "number" }
+            }
+          }
+        },
+        "downloadId": { "type": "string" },
+        "subscriptionExpiry": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "tier", "status", "subscriptionExpiry"]
+    },
+    "Trainer": {
+      "title": "Trainer",
+      "description": "A gym trainer profile",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "specialization": { "type": "string" },
+        "membersAssigned": { "type": "number" },
+        "rating": { "type": "number" },
+        "shift": { "type": "string", "enum": ["Morning", "Evening"] },
+        "status": { "type": "string", "enum": ["Active", "On Break"] }
+      },
+      "required": ["name", "specialization", "shift"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "A potential lead inquiry",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "contact": { "type": "string" },
+        "program": { "type": "string" },
+        "status": { "type": "string", "enum": ["Open", "Qualified", "Decision Pitch", "Converted"] },
+        "inquiryDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "contact", "status", "inquiryDate"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A gym expense record",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string", "enum": ["Rent", "Electricity", "Supplement Stock", "Staff", "Other"] },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "amount", "date"]
+    },
+    "GymConfig": {
+      "title": "GymConfig",
+      "description": "Global gym settings",
+      "type": "object",
+      "properties": {
+        "gymName": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "currency": { "type": "string" },
+        "pricing": {
+          "type": "object",
+          "properties": {
+            "Standard": { "type": "number" },
+            "Pro": { "type": "number" },
+            "AI": { "type": "number" }
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "/members": { "schema": "Member", "description": "Collection of gym members" },
+    "/trainers": { "schema": "Trainer", "description": "Collection of gym trainers" },
+    "/inquiries": { "schema": "Inquiry", "description": "Collection of leads" },
+    "/expenses": { "schema": "Expense", "description": "Collection of expenses" },
+    "/config": { "schema": "GymConfig", "description": "Global gym configuration" }
+  }
+}

@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --bg-main: #080C14;
+  --bg-card: #0A0F1A;
+  --text-primary: #F1F5F9;
+  --text-secondary: #64748B;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --accent: #00F2FF;
+}
+
+:root.light {
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --accent: #0EA5E9;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-main);
+    background-image: 
+      radial-gradient(circle at 2px 2px, var(--border-subtle) 1px, transparent 0);
+    background-size: 32px 32px;
+    color: var(--text-primary);
+    @apply antialiased transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+    opacity: 0.2;
+  }
+}
