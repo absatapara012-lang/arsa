@@ -76,7 +76,7 @@ export function InquiryHub() {
               <motion.div 
                 key={lead.id}
                 whileHover={{ y: -5 }}
-                className="bg-[var(--bg-card)] border-2 border-amber-500/30 rounded-3xl p-6 relative overflow-hidden shadow-[0_0_30px_rgba(245,158,11,0.1)]"
+                className="glass border-2 border-amber-500/30 rounded-3xl p-6 relative overflow-hidden shadow-[0_0_30px_rgba(245,158,11,0.1)]"
               >
                 <div className="absolute top-0 right-0 p-4">
                   <span className="px-2 py-1 bg-amber-500/10 text-amber-500 text-[8px] font-bold rounded uppercase tracking-widest border border-amber-500/20">7 Days Old</span>
@@ -99,7 +99,7 @@ export function InquiryHub() {
       )}
 
       {/* Main Pipeline */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden">
+      <div className="glass rounded-3xl overflow-hidden">
         <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between">
           <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-secondary)]">Sales Pipeline</h3>
           <div className="flex gap-2">

@@ -13,11 +13,12 @@ import {
 import { doc, onSnapshot, db, setDoc } from '../firebase';
 import { GymConfig } from '../types';
 import { motion } from 'motion/react';
+import { toast } from 'sonner';
 
 export function Settings() {
   const [config, setConfig] = useState<GymConfig>({
     gymName: 'ARSA Fit Elite',
-    logoUrl: 'https://picsum.photos/seed/gym/200/200',
+    logoUrl: '/logo.jpeg',
     currency: 'USD',
     pricing: {
       Standard: 29,
@@ -40,7 +41,7 @@ export function Settings() {
     setSaving(true);
     try {
       await setDoc(doc(db, 'config', 'global'), config);
-      alert('Configuration updated successfully.');
+      toast.success('Configuration updated successfully.');
     } catch (error) {
       console.error('Save failed:', error);
     } finally {
@@ -153,7 +154,7 @@ export function Settings() {
                   onClick={async () => {
                     const { seedInitialData } = await import('../utils/seed');
                     await seedInitialData();
-                    alert('Demo data seeded.');
+                    toast.success('Demo data seeded.');
                   }}
                   className="px-4 py-2 bg-[var(--text-primary)]/5 border border-[var(--border-subtle)] rounded-xl text-[10px] font-bold uppercase tracking-widest text-[var(--text-primary)] hover:bg-[var(--accent)]/10 hover:text-[var(--accent)] transition-all"
                 >

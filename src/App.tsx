@@ -9,6 +9,7 @@ import { Financials } from './components/Financials';
 import { AIMembership } from './components/AIMembership';
 import { Settings } from './components/Settings';
 import { LogIn, Loader2 } from 'lucide-react';
+import { Toaster } from 'sonner';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -50,11 +51,11 @@ export default function App() {
   if (!user) {
     return (
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-main)] text-[var(--text-primary)] p-4">
-        <div className="w-32 h-32 bg-[var(--accent)]/10 rounded-3xl flex items-center justify-center border border-[var(--accent)]/20 mb-8 overflow-hidden">
+        <div className="w-32 h-32 bg-[var(--accent)]/10 rounded-3xl flex items-center justify-center border border-[var(--accent)]/20 mb-8 overflow-hidden shadow-[0_0_40px_rgba(0,242,255,0.1)] backdrop-blur-md">
           <img 
-            src="https://firebasestorage.googleapis.com/v0/b/aistudio-build.appspot.com/o/user_uploads%2Flogo.png?alt=media" 
+            src="/logo.jpeg" 
             alt="ARSA Fit Logo" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain p-2"
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/gym/200/200';
             }}
@@ -88,8 +89,11 @@ export default function App() {
   };
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout}>
-      {renderTab()}
-    </Layout>
+    <>
+      <Toaster position="top-right" theme="dark" richColors />
+      <Layout activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout}>
+        {renderTab()}
+      </Layout>
+    </>
   );
 }

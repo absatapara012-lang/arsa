@@ -27,14 +27,22 @@
   body {
     background-color: var(--bg-main);
     background-image: 
-      radial-gradient(circle at 2px 2px, var(--border-subtle) 1px, transparent 0);
-    background-size: 32px 32px;
+      radial-gradient(circle at 2px 2px, var(--border-subtle) 1px, transparent 0),
+      radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.03) 0%, transparent 50%);
+    background-size: 32px 32px, 100% 100%;
+    background-attachment: fixed;
     color: var(--text-primary);
     @apply antialiased transition-colors duration-300;
   }
 }
 
 @layer components {
+  .glass {
+    @apply backdrop-blur-xl bg-white/[0.02] border border-white/[0.05];
+  }
+  .glass-dark {
+    @apply backdrop-blur-xl bg-black/[0.2] border border-white/[0.05];
+  }
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }

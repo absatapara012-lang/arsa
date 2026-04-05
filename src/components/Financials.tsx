@@ -13,8 +13,8 @@ import {
   Briefcase,
   Zap
 } from 'lucide-react';
-import { collection, onSnapshot, db, addDoc, query, orderBy } from '../firebase';
-import { Expense, Member } from '../types';
+import { collection, onSnapshot, db, addDoc, query, orderBy, doc } from '../firebase';
+import { Expense, Member, GymConfig } from '../types';
 import { format, parseISO, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
@@ -22,10 +22,17 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 export function Financials() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [config, setConfig] = useState<GymConfig | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newExpense, setNewExpense] = useState({ title: '', amount: '', category: 'Other' });
 
   useEffect(() => {
+    const unsubConfig = onSnapshot(doc(db, 'config', 'global'), (snapshot) => {
+      if (snapshot.exists()) {
+        setConfig(snapshot.data() as GymConfig);
+      }
+    });
+
     const unsubExpenses = onSnapshot(query(collection(db, 'expenses'), orderBy('date', 'desc')), (snapshot) => {
       setExpenses(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Expense)));
     });
@@ -33,12 +40,16 @@ export function Financials() {
       setMembers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Member)));
     });
     return () => {
+      unsubConfig();
       unsubExpenses();
       unsubMembers();
     };
   }, []);
 
-  const totalRevenue = members.reduce((acc, m) => acc + (m.tier === 'AI' ? 99 : m.tier === 'Pro' ? 59 : 29), 0);
+  const totalRevenue = members.reduce((acc, m) => {
+    const price = config?.pricing[m.tier] || (m.tier === 'AI' ? 99 : m.tier === 'Pro' ? 59 : 29);
+    return acc + price;
+  }, 0);
   const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
   const profit = totalRevenue - totalExpenses;
 
@@ -82,7 +93,7 @@ export function Financials() {
       {/* Financial Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-8 relative overflow-hidden group">
+          <div className="glass rounded-3xl p-8 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-6">
               <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 border border-emerald-500/20">
                 <DollarSign className="w-6 h-6" />
@@ -96,7 +107,7 @@ export function Financials() {
             </div>
           </div>
 
-          <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-8 relative overflow-hidden group">
+          <div className="glass rounded-3xl p-8 relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-6">
               <div className="w-12 h-12 bg-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 border border-rose-500/20">
                 <CreditCard className="w-6 h-6" />
@@ -110,7 +121,7 @@ export function Financials() {
             </div>
           </div>
 
-          <div className="md:col-span-2 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-main)] border border-[var(--border-subtle)] rounded-3xl p-8 relative overflow-hidden">
+          <div className="md:col-span-2 glass bg-gradient-to-br from-[var(--bg-card)]/50 to-[var(--bg-main)]/50 rounded-3xl p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--accent)]/5 rounded-full blur-3xl -mr-32 -mt-32" />
             <div className="flex items-center justify-between relative z-10">
               <div>
@@ -131,7 +142,7 @@ export function Financials() {
         </div>
 
         {/* Expense Breakdown */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-8">
+        <div className="glass rounded-3xl p-8">
           <h3 className="text-lg font-extrabold tracking-tight mb-8 text-[var(--text-primary)]">Expense Allocation</h3>
           <div className="h-[250px] w-full mb-8">
             <ResponsiveContainer width="100%" height="100%">

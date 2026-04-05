@@ -14,6 +14,7 @@ import {
 import { collection, onSnapshot, db, query, where, updateDoc, doc } from '../firebase';
 import { Member } from '../types';
 import { motion } from 'motion/react';
+import { toast } from 'sonner';
 
 const MAX_AI_SUBS = 100;
 
@@ -37,7 +38,7 @@ export function AIMembership() {
   const handleSendLink = async (member: Member) => {
     const downloadId = Math.random().toString(36).substring(2, 15);
     await updateDoc(doc(db, 'members', member.id), { downloadId });
-    alert(`Tokenized link generated for ${member.name}: arsafit.ai/app/dl/${downloadId}`);
+    toast.success(`Tokenized link generated for ${member.name}: arsafit.ai/app/dl/${downloadId}`);
   };
 
   return (
@@ -72,7 +73,7 @@ export function AIMembership() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* AI Member List */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden shadow-lg">
+          <div className="glass rounded-3xl overflow-hidden shadow-lg">
             <div className="p-6 border-b border-[var(--border-subtle)] flex items-center justify-between">
               <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-secondary)]">Active AI Subscribers</h3>
               <button className="text-[var(--accent)] text-xs font-bold hover:underline">View All</button>
@@ -112,7 +113,7 @@ export function AIMembership() {
 
         {/* Diet Dispatcher */}
         <div className="space-y-6">
-          <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-8 relative overflow-hidden shadow-lg">
+          <div className="glass rounded-3xl p-8 relative overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 p-4">
               <MessageSquare className="w-5 h-5 text-[var(--accent)] opacity-20" />
             </div>

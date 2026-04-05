@@ -20,6 +20,7 @@ import { format, parseISO, subDays, addDays, isAfter } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { analyzeNutrition } from '../services/gemini';
+import { toast } from 'sonner';
 
 export function MemberDirectory() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -90,9 +91,13 @@ export function MemberDirectory() {
         status: 'ACTIVE'
       });
       // In a real app, this would also trigger a WhatsApp message
-      alert(`Rescue protocol initiated for ${member.name}. Status reset to ACTIVE.`);
+      const message = `Hi ${member.name}, we noticed you haven't checked in lately at ARSA Fit. We've reset your status to ACTIVE. Hope to see you soon!`;
+      const whatsappUrl = `https://wa.me/${member.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      toast.success(`Rescue protocol initiated for ${member.name}. Status reset to ACTIVE.`);
     } catch (error) {
       console.error('Rescue failed:', error);
+      toast.error('Failed to initiate rescue protocol.');
     }
   };
 
@@ -127,7 +132,7 @@ export function MemberDirectory() {
         </div>
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl overflow-hidden shadow-xl">
+      <div className="glass rounded-3xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

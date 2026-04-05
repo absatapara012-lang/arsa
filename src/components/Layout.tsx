@@ -58,13 +58,13 @@ export function Layout({ children, activeTab, setActiveTab, onLogout }: LayoutPr
   return (
     <div className="flex h-screen bg-[var(--bg-main)] text-[var(--text-primary)] font-['Plus_Jakarta_Sans'] overflow-hidden transition-colors duration-300">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-[var(--border-subtle)] flex flex-col bg-[var(--bg-card)] transition-colors duration-300">
+      <aside className="w-72 border-r border-[var(--border-subtle)] flex flex-col bg-[var(--bg-card)]/80 backdrop-blur-2xl transition-colors duration-300">
         <div className="p-8 flex items-center gap-4">
-          <div className="w-12 h-12 bg-[var(--accent)]/10 rounded-xl flex items-center justify-center border border-[var(--accent)]/20 overflow-hidden">
+          <div className="w-12 h-12 bg-[var(--accent)]/10 rounded-xl flex items-center justify-center border border-[var(--accent)]/20 overflow-hidden shadow-[0_0_20px_rgba(0,242,255,0.05)]">
             <img 
-              src="https://firebasestorage.googleapis.com/v0/b/aistudio-build.appspot.com/o/user_uploads%2Flogo.png?alt=media" 
+              src="/logo.jpeg" 
               alt="Logo" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain p-1"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/gym/200/200';
               }}
@@ -115,7 +115,7 @@ export function Layout({ children, activeTab, setActiveTab, onLogout }: LayoutPr
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-20 border-b border-[var(--border-subtle)] flex items-center justify-between px-10 bg-[var(--bg-main)]/80 backdrop-blur-xl z-10 transition-colors duration-300">
+        <header className="h-20 border-b border-[var(--border-subtle)] flex items-center justify-between px-10 bg-[var(--bg-main)]/40 backdrop-blur-2xl z-10 transition-colors duration-300">
           <div className="flex items-center gap-2 text-sm font-bold text-[var(--text-secondary)]">
             <span>TERMINAL</span>
             <ChevronRight className="w-4 h-4" />
@@ -138,11 +138,11 @@ export function Layout({ children, activeTab, setActiveTab, onLogout }: LayoutPr
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-[var(--bg-main)]" />
             </button>
-            <div className="w-10 h-10 rounded-full border border-[var(--accent)]/30 p-0.5 overflow-hidden bg-[var(--bg-card)]">
+            <div className="w-10 h-10 rounded-full border border-[var(--accent)]/30 p-0.5 overflow-hidden bg-[var(--bg-card)] shadow-[0_0_15px_rgba(0,242,255,0.1)]">
               <img 
-                src="https://firebasestorage.googleapis.com/v0/b/aistudio-build.appspot.com/o/user_uploads%2Flogo.png?alt=media" 
+                src="/logo.jpeg" 
                 alt="ARSA Fit Logo" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-0.5"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/admin/100/100';
                 }}

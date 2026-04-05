@@ -46,7 +46,7 @@ export function TrainerHub() {
           <motion.div 
             key={trainer.id}
             whileHover={{ y: -5 }}
-            className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-6 group relative overflow-hidden"
+            className="glass rounded-3xl p-6 group relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-4">
               <span className={`px-2 py-1 rounded-lg text-[8px] font-bold uppercase tracking-widest border ${

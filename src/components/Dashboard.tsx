@@ -22,8 +22,8 @@ import {
   Cell
 } from 'recharts';
 import { motion } from 'motion/react';
-import { collection, onSnapshot, db, query, orderBy, limit } from '../firebase';
-import { Member, Expense, Inquiry } from '../types';
+import { collection, onSnapshot, db, query, orderBy, limit, doc } from '../firebase';
+import { Member, Expense, Inquiry, GymConfig } from '../types';
 import { format, subDays, isAfter, parseISO } from 'date-fns';
 
 const data = [
@@ -53,8 +53,15 @@ export function Dashboard() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [atRiskCount, setAtRiskCount] = useState(0);
+  const [config, setConfig] = useState<GymConfig | null>(null);
 
   useEffect(() => {
+    const unsubConfig = onSnapshot(doc(db, 'config', 'global'), (snapshot) => {
+      if (snapshot.exists()) {
+        setConfig(snapshot.data() as GymConfig);
+      }
+    });
+
     const unsubMembers = onSnapshot(collection(db, 'members'), (snapshot) => {
       const memberList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Member));
       setMembers(memberList);
@@ -77,13 +84,17 @@ export function Dashboard() {
     });
 
     return () => {
+      unsubConfig();
       unsubMembers();
       unsubExpenses();
       unsubInquiries();
     };
   }, []);
 
-  const totalRevenue = members.reduce((acc, m) => acc + (m.tier === 'AI' ? 99 : m.tier === 'Pro' ? 59 : 29), 0);
+  const totalRevenue = members.reduce((acc, m) => {
+    const price = config?.pricing[m.tier] || (m.tier === 'AI' ? 99 : m.tier === 'Pro' ? 59 : 29);
+    return acc + price;
+  }, 0);
   const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
   const profit = totalRevenue - totalExpenses;
 
@@ -353,7 +364,7 @@ function KPICard({ title, value, trend, icon: Icon, color, isPositive, isWarning
   return (
     <motion.div 
       whileHover={{ y: -5, scale: 1.02 }}
-      className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-3xl p-6 relative overflow-hidden group cursor-pointer"
+      className="glass rounded-3xl p-6 relative overflow-hidden group cursor-pointer"
     >
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-white/10 transition-all" />
       
